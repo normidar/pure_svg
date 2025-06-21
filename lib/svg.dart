@@ -2,7 +2,6 @@ import 'package:pure_svg/svg.dart';
 
 import 'src/cache.dart';
 
-
 export 'src/cache.dart';
 export 'src/loaders.dart';
 

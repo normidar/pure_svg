@@ -6,11 +6,10 @@ import 'dart:io';
 
 void main() {
   group('PictureRecorder', () {
-    test('初期状態では記録中である', () async {
+    test('make a svg image', () async {
       final canvas = ui.Canvas.forRecording();
 
-      const String rawSvg =
-          '''
+      const String rawSvg = '''
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
   <defs>
     <linearGradient id="lg" x1="100%" y1="0%" x2="0%" y2="100%">
@@ -34,10 +33,10 @@ void main() {
       // Or convert the picture to an image:
       final ui.Image image = await pictureInfo.picture.toImage(1024, 1024);
 
-      // 画像をPNGとしてエクスポート
+      // Export image as PNG
       final pngData = image.toPng();
 
-      // ファイルに保存
+      // Save to file
       final file = File('test_output/output_image.png');
       await file.writeAsBytes(pngData);
 

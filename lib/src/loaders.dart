@@ -7,7 +7,6 @@ import 'package:meta/meta.dart';
 import 'package:pure_svg/svg.dart';
 import 'package:pure_ui/pure_ui.dart';
 
-
 /// A theme used when decoding an SVG picture.
 @immutable
 class SvgTheme {
