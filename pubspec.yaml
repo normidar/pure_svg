@@ -3,7 +3,7 @@ dependencies:
   meta: ^1.7.0
   path_parsing: ^1.0.1
   pure_ui: ^0.0.1
-  xml: '>=6.3.0 <=6.5.0'
+  xml: ^6.3.0
 description: A dart pure svg library
 dev_dependencies:
   test: ^1.26.0
