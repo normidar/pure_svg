@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:pure_svg/svg.dart';
 
-
 /// The cache for decoded SVGs.
 class Cache {
   final Map<Object, Future<ByteData>> _pending = <Object, Future<ByteData>>{};

@@ -7,7 +7,6 @@ import 'dart:typed_data';
 import 'package:pure_svg/src/vector_graphics/vector_graphics_codec/vector_graphics_codec.dart';
 import 'package:pure_ui/pure_ui.dart';
 
-
 import 'loader.dart';
 
 const VectorGraphicsCodec _codec = VectorGraphicsCodec();
