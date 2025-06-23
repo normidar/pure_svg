@@ -2266,7 +2266,6 @@ class _Paths {
   static Path path(SvgParser parserState) {
     final String d = parserState.attribute('d', def: '')!;
     final rt = parseSvgPathData(d, parserState._currentAttributes.fillRule);
-    print('path: ${rt.toFlutterString()}');
     return rt;
   }
 
