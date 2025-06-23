@@ -4,7 +4,7 @@ dependencies:
   path_parsing: ^1.0.1
   pure_ui: ^0.0.1
   xml: ^6.3.0
-description: A dart pure svg library
+description: A pure Dart SVG parser and renderer designed for Flutter and Dart projects. This library provides a lightweight, dependency-minimized solution for loading, parsing, and rendering SVG files, making it ideal for custom UI and graphics generation.
 dev_dependencies:
   test: ^1.26.0
 environment:
@@ -14,4 +14,4 @@ repository: https://github.com/normidar/pure_svg
 topics:
   - svg
   - vector-graphics
-version: 0.0.1
+version: 0.0.2
