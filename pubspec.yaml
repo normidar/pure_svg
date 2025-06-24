@@ -14,4 +14,7 @@ repository: https://github.com/normidar/pure_svg
 topics:
   - svg
   - vector-graphics
+  - pure
+  - pure-dart
+  - image
 version: 0.0.2
