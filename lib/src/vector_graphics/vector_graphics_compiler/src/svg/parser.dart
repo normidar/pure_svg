@@ -64,12 +64,17 @@ final RegExp _whitespacePattern = RegExp(r'\s');
 /// Parse an SVG to the initial Node tree.
 @visibleForTesting
 Node parseToNodeTree(String source) {
-  return SvgParser(source, const SvgTheme(), null, true, null)
-      ._parseToNodeTree();
+  return SvgParser(
+    source,
+    const SvgTheme(),
+    null,
+    true,
+    null,
+  )._parseToNodeTree();
 }
 
-typedef _ParseFunc = void Function(
-    SvgParser parserState, bool warningsAsErrors);
+typedef _ParseFunc =
+    void Function(SvgParser parserState, bool warningsAsErrors);
 
 typedef _PathFunc = Path? Function(SvgParser parserState);
 
@@ -94,9 +99,7 @@ class ColorOrNone {
   const ColorOrNone.color([this.color]) : isNone = false;
 
   /// See [ColorOrNone].
-  const ColorOrNone.none()
-      : isNone = true,
-        color = null;
+  const ColorOrNone.none() : isNone = true, color = null;
 
   @override
   String toString() => isNone ? '"none"' : (color?.toString() ?? 'null');
@@ -510,7 +513,8 @@ class SvgFillAttributes {
     if (color.isNone) {
       return null;
     }
-    final Color? resolvedColor = color.color?.withOpacity(opacity ?? 1.0) ??
+    final Color? resolvedColor =
+        color.color?.withOpacity(opacity ?? 1.0) ??
         defaultColor?.withOpacity(opacity ?? 1.0);
     if (resolvedColor == null) {
       return null;
@@ -818,10 +822,7 @@ class SvgParser {
   /// stripped off when parsed to a `double`.
   ///
   /// Passing `null` will return `null`.
-  double? parseDoubleWithUnits(
-    String? rawDouble, {
-    bool tryParse = false,
-  }) {
+  double? parseDoubleWithUnits(String? rawDouble, {bool tryParse = false}) {
     return numbers.parseDoubleWithUnits(
       rawDouble,
       tryParse: tryParse,
@@ -835,10 +836,7 @@ class SvgParser {
       return null;
     }
 
-    double? ret = parseDoubleWithUnits(
-      raw,
-      tryParse: true,
-    );
+    double? ret = parseDoubleWithUnits(raw, tryParse: true);
     if (ret != null) {
       return ret;
     }
@@ -957,8 +955,9 @@ class SvgParser {
         return TextDecoration.lineThrough;
     }
     throw UnsupportedError(
-        'Attribute value for text-decoration="$textDecoration"'
-        ' is not supported');
+      'Attribute value for text-decoration="$textDecoration"'
+      ' is not supported',
+    );
   }
 
   /// Parses a `text-decoration-style` attribute value into a [TextDecorationStyle].
@@ -979,8 +978,9 @@ class SvgParser {
         return TextDecorationStyle.wavy;
     }
     throw UnsupportedError(
-        'Attribute value for text-decoration-style="$textDecorationStyle"'
-        ' is not supported');
+      'Attribute value for text-decoration-style="$textDecorationStyle"'
+      ' is not supported',
+    );
   }
 
   /// Parses a `spreadMethod` attribute into a [TileMode].
@@ -1002,10 +1002,7 @@ class SvgParser {
   bool startElement(XmlStartElementEvent event) {
     if (event.name == 'defs') {
       if (!event.isSelfClosing) {
-        addGroup(
-          event,
-          ParentNode(_currentAttributes),
-        );
+        addGroup(event, ParentNode(_currentAttributes));
         return true;
       }
     }
@@ -1040,12 +1037,14 @@ class SvgParser {
     //   non-whitespace data, prepend a space.
     // - If the last text wasn't whitespace and ended with whitespace, prepend
     //   a space.
-    final bool prependSpace = _currentAttributes.x == null &&
+    final bool prependSpace =
+        _currentAttributes.x == null &&
             (_lastEndElementEvent?.localName == 'tspan' &&
                 textHasNonWhitespace) ||
         _lastTextEndedWithSpace;
 
-    _lastTextEndedWithSpace = textHasNonWhitespace &&
+    _lastTextEndedWithSpace =
+        textHasNonWhitespace &&
         text.startsWith(_whitespacePattern, text.length - 1);
 
     // From the spec:
@@ -1064,10 +1063,7 @@ class SvgParser {
     }
 
     currentGroup?.addChild(
-      TextNode(
-        prependSpace ? ' $text' : text,
-        _currentAttributes,
-      ),
+      TextNode(prependSpace ? ' $text' : text, _currentAttributes),
       // Do not supply pattern/clip/mask IDs, those are handled by the group
       // text or tspan this text is part of.
       clipResolver: _definitions.getClipPath,
@@ -1105,11 +1101,12 @@ class SvgParser {
     Color? currentColor,
   }) {
     final String? id = attributeMap['id'];
-    final double? opacity =
-        parseDouble(attributeMap['opacity'])?.clamp(0.0, 1.0);
+    final double? opacity = parseDouble(
+      attributeMap['opacity'],
+    )?.clamp(0.0, 1.0);
     final Color? color =
         parseColor(attributeMap['color'], attributeName: 'color', id: id) ??
-            currentColor;
+        currentColor;
 
     final String? rawX = attributeMap['x'];
     final String? rawY = attributeMap['y'];
@@ -1118,43 +1115,38 @@ class SvgParser {
     final String? rawDy = attributeMap['dy'];
 
     return SvgAttributes._(
-        raw: attributeMap,
+      raw: attributeMap,
+      id: id,
+      x: DoubleOrPercentage.fromString(rawX),
+      y: DoubleOrPercentage.fromString(rawY),
+      dx: DoubleOrPercentage.fromString(rawDx),
+      dy: DoubleOrPercentage.fromString(rawDy),
+      href: attributeMap['href'],
+      color: attributeMap['color']?.toLowerCase() == 'none'
+          ? const ColorOrNone.none()
+          : ColorOrNone.color(color),
+      stroke: _parseStrokeAttributes(attributeMap, opacity, color, id),
+      fill: _parseFillAttributes(attributeMap, opacity, color, id),
+      fillRule: parseRawFillRule(attributeMap['fill-rule']),
+      clipRule: parseRawFillRule(attributeMap['clip-rule']),
+      clipPathId: attributeMap['clip-path'],
+      blendMode: _blendModes[attributeMap['mix-blend-mode']],
+      transform:
+          parseTransform(attributeMap['transform']) ?? AffineMatrix.identity,
+      fontFamily: attributeMap['font-family'],
+      fontWeight: parseFontWeight(attributeMap['font-weight']),
+      fontSize: parseFontSize(attributeMap['font-size']),
+      textDecoration: parseTextDecoration(attributeMap['text-decoration']),
+      textDecorationStyle: parseTextDecorationStyle(
+        attributeMap['text-decoration-style'],
+      ),
+      textDecorationColor: parseColor(
+        attributeMap['text-decoration-color'],
+        attributeName: 'text-decoration-color',
         id: id,
-        x: DoubleOrPercentage.fromString(rawX),
-        y: DoubleOrPercentage.fromString(rawY),
-        dx: DoubleOrPercentage.fromString(rawDx),
-        dy: DoubleOrPercentage.fromString(rawDy),
-        href: attributeMap['href'],
-        color: attributeMap['color']?.toLowerCase() == 'none'
-            ? const ColorOrNone.none()
-            : ColorOrNone.color(color),
-        stroke: _parseStrokeAttributes(
-          attributeMap,
-          opacity,
-          color,
-          id,
-        ),
-        fill: _parseFillAttributes(
-          attributeMap,
-          opacity,
-          color,
-          id,
-        ),
-        fillRule: parseRawFillRule(attributeMap['fill-rule']),
-        clipRule: parseRawFillRule(attributeMap['clip-rule']),
-        clipPathId: attributeMap['clip-path'],
-        blendMode: _blendModes[attributeMap['mix-blend-mode']],
-        transform:
-            parseTransform(attributeMap['transform']) ?? AffineMatrix.identity,
-        fontFamily: attributeMap['font-family'],
-        fontWeight: parseFontWeight(attributeMap['font-weight']),
-        fontSize: parseFontSize(attributeMap['font-size']),
-        textDecoration: parseTextDecoration(attributeMap['text-decoration']),
-        textDecorationStyle:
-            parseTextDecorationStyle(attributeMap['text-decoration-style']),
-        textDecorationColor: parseColor(attributeMap['text-decoration-color'],
-            attributeName: 'text-decoration-color', id: id),
-        textAnchorMultiplier: parseTextAnchor(attributeMap['text-anchor']));
+      ),
+      textAnchorMultiplier: parseTextAnchor(attributeMap['text-anchor']),
+    );
   }
 
   void _discardSubtree() {
@@ -1180,10 +1172,7 @@ class SvgParser {
         attributeMap['visibility'] != 'hidden';
   }
 
-  StrokeCap? _parseCap(
-    String? raw,
-    Stroke? definitionPaint,
-  ) {
+  StrokeCap? _parseCap(String? raw, Stroke? definitionPaint) {
     switch (raw) {
       case 'butt':
         return StrokeCap.butt;
@@ -1250,18 +1239,19 @@ class SvgParser {
           .substring(colorString.indexOf('(') + 1, colorString.indexOf(')'))
           .split(',')
           .map((String rawColor) {
-        rawColor = rawColor.trim();
+            rawColor = rawColor.trim();
 
-        if (rawColor.endsWith('%')) {
-          rawColor = rawColor.substring(0, rawColor.length - 1);
-        }
+            if (rawColor.endsWith('%')) {
+              rawColor = rawColor.substring(0, rawColor.length - 1);
+            }
 
-        if (rawColor.contains('.')) {
-          return (parseDouble(rawColor)! * 2.55).round();
-        }
+            if (rawColor.contains('.')) {
+              return (parseDouble(rawColor)! * 2.55).round();
+            }
 
-        return int.parse(rawColor);
-      }).toList();
+            return int.parse(rawColor);
+          })
+          .toList();
       final double hue = values[0] / 360 % 1;
       final double saturation = values[1] / 100;
       final double luminance = values[2] / 100;
@@ -1303,7 +1293,11 @@ class SvgParser {
       rgb = rgb.map((double val) => val * 255).toList();
 
       return Color.fromARGB(
-          alpha, rgb[0].round(), rgb[1].round(), rgb[2].round());
+        alpha,
+        rgb[0].round(),
+        rgb[1].round(),
+        rgb[2].round(),
+      );
     }
 
     // handle rgb() colors e.g. rgb(255, 255, 255)
@@ -1312,13 +1306,14 @@ class SvgParser {
           .substring(colorString.indexOf('(') + 1, colorString.indexOf(')'))
           .split(',')
           .map((String rawColor) {
-        rawColor = rawColor.trim();
-        if (rawColor.endsWith('%')) {
-          rawColor = rawColor.substring(0, rawColor.length - 1);
-          return (parseDouble(rawColor)! * 2.55).round();
-        }
-        return int.parse(rawColor);
-      }).toList();
+            rawColor = rawColor.trim();
+            if (rawColor.endsWith('%')) {
+              rawColor = rawColor.substring(0, rawColor.length - 1);
+              return (parseDouble(rawColor)! * 2.55).round();
+            }
+            return int.parse(rawColor);
+          })
+          .toList();
 
       // rgba() isn't really in the spec, but Firefox supported it at one point so why not.
       final int a = rgb.length > 3 ? rgb[3] : 255;
@@ -1415,10 +1410,7 @@ class SvgParser {
     );
   }
 
-  StrokeJoin? _parseJoin(
-    String? raw,
-    Stroke? definitionPaint,
-  ) {
+  StrokeJoin? _parseJoin(String? raw, Stroke? definitionPaint) {
     switch (raw) {
       case 'miter':
         return StrokeJoin.miter;
@@ -1442,13 +1434,14 @@ class SvgParser {
           !raw.endsWith('ex') &&
           raw.contains(notDigits)) {
         print(
-            'Warning: Flutter SVG only supports the following formats for `width` and `height` on the SVG root:\n'
-            '  width="100%"\n'
-            '  width="100em"\n'
-            '  width="100ex"\n'
-            '  width="100px"\n'
-            '  width="100" (where the number will be treated as pixels).\n'
-            'The supplied value ($raw) will be discarded and treated as if it had not been specified.');
+          'Warning: Flutter SVG only supports the following formats for `width` and `height` on the SVG root:\n'
+          '  width="100%"\n'
+          '  width="100em"\n'
+          '  width="100ex"\n'
+          '  width="100px"\n'
+          '  width="100" (where the number will be treated as pixels).\n'
+          'The supplied value ($raw) will be discarded and treated as if it had not been specified.',
+        );
       }
       return true;
     }());
@@ -1483,7 +1476,8 @@ class SvgParser {
     final String? rawStrokeDashArray = attributeMap['stroke-dasharray'];
     final String? rawStrokeDashOffset = attributeMap['stroke-dashoffset'];
 
-    final String? anyStrokeAttribute = rawStroke ??
+    final String? anyStrokeAttribute =
+        rawStroke ??
         rawStrokeCap ??
         rawLineJoin ??
         rawMiterLimit ??
@@ -1573,22 +1567,20 @@ class SvgParser {
     final String rawHeight = attribute('height') ?? '';
 
     if (viewBox == '' && rawWidth == '' && rawHeight == '') {
-      throw StateError('SVG did not specify dimensions\n\n'
-          'The SVG library looks for a `viewBox` or `width` and `height` attribute '
-          'to determine the viewport boundary of the SVG.  Note that these attributes, '
-          'as with all SVG attributes, are case sensitive.\n'
-          'During processing, the following attributes were found:\n'
-          '  ${_currentAttributes.raw}');
+      throw StateError(
+        'SVG did not specify dimensions\n\n'
+        'The SVG library looks for a `viewBox` or `width` and `height` attribute '
+        'to determine the viewport boundary of the SVG.  Note that these attributes, '
+        'as with all SVG attributes, are case sensitive.\n'
+        'During processing, the following attributes were found:\n'
+        '  ${_currentAttributes.raw}',
+      );
     }
 
     if (viewBox == '') {
       final double width = _parseRawWidthHeight(rawWidth);
       final double height = _parseRawWidthHeight(rawHeight);
-      return _Viewport(
-        width,
-        height,
-        AffineMatrix.identity,
-      );
+      return _Viewport(width, height, AffineMatrix.identity);
     }
 
     final List<String> parts = viewBox.split(RegExp(r'[ ,]+'));
@@ -1613,8 +1605,9 @@ class SvgParser {
       final XmlEvent event = _eventIterator.current;
       bool isSelfClosing = false;
       if (event is XmlStartElementEvent) {
-        final Map<String, String> attributeMap =
-            _createAttributeMap(event.attributes);
+        final Map<String, String> attributeMap = _createAttributeMap(
+          event.attributes,
+        );
         if (!_isVisible(attributeMap)) {
           if (!event.isSelfClosing) {
             depth += 1;
@@ -1743,12 +1736,7 @@ class SvgStrokeAttributes {
     }
 
     if (hasPattern ?? false) {
-      return Stroke(
-        join: join,
-        cap: cap,
-        miterLimit: miterLimit,
-        width: width,
-      );
+      return Stroke(join: join, cap: cap, miterLimit: miterLimit, width: width);
     }
 
     if (_definitions == null) {
@@ -1797,7 +1785,8 @@ class _Elements {
             PathNode(
               Path(
                 commands: sourcePath.commands.toList(),
-                fillType: parserState._currentAttributes.clipRule ??
+                fillType:
+                    parserState._currentAttributes.clipRule ??
                     PathFillType.nonZero,
               ),
               parserState._currentAttributes,
@@ -1821,10 +1810,7 @@ class _Elements {
         }
       }
     }
-    parserState._definitions.addClipPath(
-      id,
-      pathNodes,
-    );
+    parserState._definitions.addClipPath(id, pathNodes);
     return;
   }
 
@@ -1849,10 +1835,7 @@ class _Elements {
     return;
   }
 
-  static void image(
-    SvgParser parserState,
-    bool warningsAsErrors,
-  ) {
+  static void image(SvgParser parserState, bool warningsAsErrors) {
     final String? xlinkHref = parserState._currentAttributes.href;
     if (xlinkHref == null) {
       return;
@@ -1878,18 +1861,22 @@ class _Elements {
       if (format == null) {
         if (warningsAsErrors) {
           throw UnimplementedError(
-              'Image data format not supported: $mimeType');
+            'Image data format not supported: $mimeType',
+          );
         } else {
           print('Warning: Unsupported image format $mimeType');
         }
         return;
       }
 
-      final Uint8List data = base64.decode(xlinkHref
-          .substring(commaLocation)
-          .replaceAll(_whitespacePattern, ''));
-      final ImageNode image =
-          ImageNode(data, format, parserState._currentAttributes);
+      final Uint8List data = base64.decode(
+        xlinkHref.substring(commaLocation).replaceAll(_whitespacePattern, ''),
+      );
+      final ImageNode image = ImageNode(
+        data,
+        format,
+        parserState._currentAttributes,
+      );
       parserState.currentGroup!.addChild(
         image,
         clipResolver: parserState._definitions.getClipPath,
@@ -1905,10 +1892,7 @@ class _Elements {
     return;
   }
 
-  static void linearGradient(
-    SvgParser parserState,
-    bool warningsAsErrors,
-  ) {
+  static void linearGradient(SvgParser parserState, bool warningsAsErrors) {
     final GradientUnitMode? unitMode = parserState.parseGradientUnitMode();
     final String x1 = parserState.attribute('x1', def: '0%')!;
     final String x2 = parserState.attribute('x2', def: '100%')!;
@@ -1970,17 +1954,16 @@ class _Elements {
           'stop-opacity',
           def: '1',
         )!;
-        final Color stopColor = parserState.parseColor(
-                parserState.attribute('stop-color'),
-                attributeName: 'stop-color',
-                id: parserState._currentAttributes.id) ??
+        final Color stopColor =
+            parserState.parseColor(
+              parserState.attribute('stop-color'),
+              attributeName: 'stop-color',
+              id: parserState._currentAttributes.id,
+            ) ??
             Color.opaqueBlack;
         colors.add(stopColor.withOpacity(parseDouble(rawOpacity)!));
 
-        final String rawOffset = parserState.attribute(
-          'offset',
-          def: '0%',
-        )!;
+        final String rawOffset = parserState.attribute('offset', def: '0%')!;
         offsets.add(parseDecimalOrPercentage(rawOffset));
       }
     }
@@ -1992,10 +1975,16 @@ class _Elements {
     final String rawWidth = parserState.attribute('width') ?? '';
     final String rawHeight = parserState.attribute('height') ?? '';
 
-    double? patternWidth =
-        parsePatternUnitToDouble(rawWidth, 'width', viewBox: parserState._root);
-    double? patternHeight = parsePatternUnitToDouble(rawHeight, 'height',
-        viewBox: parserState._root);
+    double? patternWidth = parsePatternUnitToDouble(
+      rawWidth,
+      'width',
+      viewBox: parserState._root,
+    );
+    double? patternHeight = parsePatternUnitToDouble(
+      rawHeight,
+      'height',
+      viewBox: parserState._root,
+    );
 
     if (patternWidth == null || patternHeight == null) {
       final _Viewport viewBox = parserState._parseViewBox();
@@ -2008,34 +1997,32 @@ class _Elements {
     final String id = parserState.buildUrlIri();
     parserState.patternIds.add(id);
     final SvgAttributes newAttributes = SvgAttributes._(
-        raw: attributes.raw,
-        id: attributes.id,
-        href: attributes.href,
-        transform: attributes.transform,
-        color: attributes.color,
-        stroke: attributes.stroke,
-        fill: attributes.fill,
-        fillRule: attributes.fillRule,
-        clipRule: attributes.clipRule,
-        clipPathId: attributes.clipPathId,
-        blendMode: attributes.blendMode,
-        fontFamily: attributes.fontFamily,
-        fontWeight: attributes.fontWeight,
-        fontSize: attributes.fontSize,
-        x: DoubleOrPercentage.fromString(rawX),
-        y: DoubleOrPercentage.fromString(rawY),
-        width: patternWidth,
-        height: patternHeight);
+      raw: attributes.raw,
+      id: attributes.id,
+      href: attributes.href,
+      transform: attributes.transform,
+      color: attributes.color,
+      stroke: attributes.stroke,
+      fill: attributes.fill,
+      fillRule: attributes.fillRule,
+      clipRule: attributes.clipRule,
+      clipPathId: attributes.clipPathId,
+      blendMode: attributes.blendMode,
+      fontFamily: attributes.fontFamily,
+      fontWeight: attributes.fontWeight,
+      fontSize: attributes.fontSize,
+      x: DoubleOrPercentage.fromString(rawX),
+      y: DoubleOrPercentage.fromString(rawY),
+      width: patternWidth,
+      height: patternHeight,
+    );
 
     final ParentNode group = ParentNode(newAttributes);
     parserState.addGroup(parserState._currentStartElement!, group);
     return;
   }
 
-  static void radialGradient(
-    SvgParser parserState,
-    bool warningsAsErrors,
-  ) {
+  static void radialGradient(SvgParser parserState, bool warningsAsErrors) {
     final GradientUnitMode? unitMode = parserState.parseGradientUnitMode();
     final String? rawCx = parserState.attribute('cx', def: '50%');
     final String? rawCy = parserState.attribute('cy', def: '50%');
@@ -2154,13 +2141,13 @@ class _Elements {
         (parseTransform(parserState.attribute('transform')) ??
                 AffineMatrix.identity)
             .translated(
-      parserState.parseDoubleWithUnits(
-        parserState.attribute('x', def: '0'),
-      )!,
-      parserState.parseDoubleWithUnits(
-        parserState.attribute('y', def: '0'),
-      )!,
-    );
+              parserState.parseDoubleWithUnits(
+                parserState.attribute('x', def: '0'),
+              )!,
+              parserState.parseDoubleWithUnits(
+                parserState.attribute('y', def: '0'),
+              )!,
+            );
 
     final ParentNode group = ParentNode(
       // parserState._currentAttributes,
@@ -2207,9 +2194,9 @@ class _Paths {
       parserState.attribute('r', def: '0'),
     )!;
     final Rect oval = Rect.fromCircle(cx, cy, r);
-    final rt = PathBuilder(parserState._currentAttributes.fillRule)
-        .addOval(oval)
-        .toPath();
+    final rt = PathBuilder(
+      parserState._currentAttributes.fillRule,
+    ).addOval(oval).toPath();
     return rt;
   }
 
@@ -2228,9 +2215,9 @@ class _Paths {
     )!;
 
     final Rect r = Rect.fromLTWH(cx - rx, cy - ry, rx * 2, ry * 2);
-    return PathBuilder(parserState._currentAttributes.fillRule)
-        .addOval(r)
-        .toPath();
+    return PathBuilder(
+      parserState._currentAttributes.fillRule,
+    ).addOval(r).toPath();
   }
 
   static Path line(SvgParser parserState) {
@@ -2247,10 +2234,9 @@ class _Paths {
       parserState.attribute('y2', def: '0'),
     )!;
 
-    return PathBuilder(parserState._currentAttributes.fillRule)
-        .moveTo(x1, y1)
-        .lineTo(x2, y2)
-        .toPath();
+    return PathBuilder(
+      parserState._currentAttributes.fillRule,
+    ).moveTo(x1, y1).lineTo(x2, y2).toPath();
   }
 
   static Path? parsePathFromPoints(SvgParser parserState, bool close) {
@@ -2298,14 +2284,14 @@ class _Paths {
     if (rxRaw != null && rxRaw != '') {
       final double rx = parserState.parseDoubleWithUnits(rxRaw)!;
       final double ry = parserState.parseDoubleWithUnits(ryRaw)!;
-      return PathBuilder(parserState._currentAttributes.fillRule)
-          .addRRect(Rect.fromLTWH(x, y, w, h), rx, ry)
-          .toPath();
+      return PathBuilder(
+        parserState._currentAttributes.fillRule,
+      ).addRRect(Rect.fromLTWH(x, y, w, h), rx, ry).toPath();
     }
 
-    final rt = PathBuilder(parserState._currentAttributes.fillRule)
-        .addRect(Rect.fromLTWH(x, y, w, h))
-        .toPath();
+    final rt = PathBuilder(
+      parserState._currentAttributes.fillRule,
+    ).addRect(Rect.fromLTWH(x, y, w, h)).toPath();
     return rt;
   }
 }
@@ -2343,10 +2329,7 @@ class _Resolver {
   }
 
   /// Add the [gradient] to the resolver, identified by [href].
-  void addGradient(
-    Gradient gradient,
-    String? href,
-  ) {
+  void addGradient(Gradient gradient, String? href) {
     assert(!_sealed);
     if (_shaders.containsKey(gradient.id)) {
       return;

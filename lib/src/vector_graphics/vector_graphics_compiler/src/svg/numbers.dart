@@ -79,10 +79,7 @@ double? parseDoubleWithUnits(
   } else if (rawDouble?.contains('ex') ?? false) {
     unit = theme.xHeight;
   }
-  final double? value = parseDouble(
-    rawDouble,
-    tryParse: tryParse,
-  );
+  final double? value = parseDouble(rawDouble, tryParse: tryParse);
 
   return value != null ? value * unit : null;
 }
