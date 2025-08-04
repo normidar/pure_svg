@@ -1,7 +1,7 @@
 ---
 dependencies:
-  meta: ^1.7.0
-  path_parsing: ^1.0.1
+  meta: ^1.0.0
+  path_parsing: ^1.0.0
   pure_ui: ^0.0.1
   xml: ^6.3.0
 description: A pure Dart SVG parser and renderer designed for Flutter and Dart projects.
@@ -17,4 +17,4 @@ topics:
   - pure
   - pure-dart
   - image
-version: 0.0.3
+version: 0.0.4
