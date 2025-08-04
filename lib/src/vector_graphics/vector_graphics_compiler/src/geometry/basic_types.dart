@@ -27,10 +27,7 @@ class Point {
   /// the number advances from 0 to 1 it returns a value closer to a or b
   /// respectively.
   static Point lerp(Point a, Point b, double t) {
-    return Point(
-      lerpDouble(a.x, b.x, t),
-      lerpDouble(a.y, b.y, t),
-    );
+    return Point(lerpDouble(a.x, b.x, t), lerpDouble(a.y, b.y, t));
   }
 
   /// The distance between points [a] and [b].

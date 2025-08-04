@@ -22,8 +22,9 @@ void main() async {
   </g>
 </svg>
 ''';
-  final PictureInfo pictureInfo =
-      await vg.loadPicture(const SvgStringLoader(rawSvg));
+  final PictureInfo pictureInfo = await vg.loadPicture(
+    const SvgStringLoader(rawSvg),
+  );
 
   // You can draw the picture to a canvas:
   canvas.drawPicture(pictureInfo.picture);

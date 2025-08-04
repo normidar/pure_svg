@@ -87,7 +87,13 @@ abstract class PathProxy {
   /// Creates a cubic Bezier curve from the current point to point x3,y3 using
   /// x1,y1 as the first control point and x2,y2 as the second.
   void cubicTo(
-      double x1, double y1, double x2, double y2, double x3, double y3);
+    double x1,
+    double y1,
+    double x2,
+    double y2,
+    double x3,
+    double y3,
+  );
 
   /// Draws a straight line from the current point to the last [moveTo] point.
   void close();
@@ -112,7 +118,13 @@ class SvgPathProxy implements PathProxy {
 
   @override
   void cubicTo(
-      double x1, double y1, double x2, double y2, double x3, double y3) {
+    double x1,
+    double y1,
+    double x2,
+    double y2,
+    double x3,
+    double y3,
+  ) {
     _buffer.write('C$x1,$y1 $x2,$y2 $x3,$y3');
   }
 

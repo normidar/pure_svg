@@ -200,13 +200,14 @@ class LinearGradient extends Gradient {
 
   @override
   int get hashCode => Object.hash(
-      id,
-      from,
-      to,
-      Object.hashAll(colors ?? <Color>[]),
-      Object.hashAll(offsets ?? <double>[]),
-      tileMode,
-      unitMode);
+        id,
+        from,
+        to,
+        Object.hashAll(colors ?? <Color>[]),
+        Object.hashAll(offsets ?? <double>[]),
+        tileMode,
+        unitMode,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -344,15 +345,16 @@ class RadialGradient extends Gradient {
 
   @override
   int get hashCode => Object.hash(
-      id,
-      center,
-      radius,
-      Object.hashAll(colors ?? <Color>[]),
-      Object.hashAll(offsets ?? <double>[]),
-      tileMode,
-      transform,
-      focalPoint,
-      unitMode);
+        id,
+        center,
+        radius,
+        Object.hashAll(colors ?? <Color>[]),
+        Object.hashAll(offsets ?? <double>[]),
+        tileMode,
+        transform,
+        focalPoint,
+        unitMode,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -396,11 +398,8 @@ class Paint {
   /// Creates a new collection of painting attributes.
   ///
   /// See [Paint].
-  const Paint({
-    BlendMode? blendMode,
-    this.stroke,
-    this.fill,
-  }) : blendMode = blendMode ?? BlendMode.srcOver;
+  const Paint({BlendMode? blendMode, this.stroke, this.fill})
+      : blendMode = blendMode ?? BlendMode.srcOver;
 
   /// The Porter-Duff algorithm to use when compositing this painting object
   /// with any objects painted under it.
@@ -444,10 +443,7 @@ class Paint {
     return Paint(
       blendMode: blendMode,
       stroke: stroke,
-      fill: Fill(
-        color: fill!.color,
-        shader: newShader,
-      ),
+      fill: Fill(color: fill!.color, shader: newShader),
     );
   }
 
@@ -510,7 +506,14 @@ class Stroke {
 
   @override
   int get hashCode => Object.hash(
-      PaintingStyle.stroke, color, shader, cap, join, miterLimit, width);
+        PaintingStyle.stroke,
+        color,
+        shader,
+        cap,
+        join,
+        miterLimit,
+        width,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -553,10 +556,7 @@ class Stroke {
 @immutable
 class Fill {
   /// Creates a new immutable set of drawing attributes for a [Paint].
-  const Fill({
-    Color? color,
-    this.shader,
-  }) : color = color ?? Color.opaqueBlack;
+  const Fill({Color? color, this.shader}) : color = color ?? Color.opaqueBlack;
 
   /// The color to use for this stroke.
   ///
@@ -809,7 +809,6 @@ enum BlendMode {
   ///  * [hardLight], which combines [modulate] and [screen] to favor the
   ///    source image.
   screen, // The last coeff mode.
-
   /// Multiply the components of the source and destination images after
   /// adjusting them to favor the destination.
   ///
@@ -944,7 +943,6 @@ enum BlendMode {
   ///
   /// ![](https://flutter.github.io/assets-for-api-docs/assets/dart-ui/blend_mode_multiply.png)
   multiply, // The last separable mode.
-
   /// Take the hue of the source image, and the saturation and luminosity of the
   /// destination image.
   ///
@@ -1442,7 +1440,7 @@ enum TextDecorationStyle {
   dashed,
 
   /// Draw a sinusoidal line
-  wavy
+  wavy,
 }
 
 /// A linear decoration to draw near the text.

@@ -68,14 +68,7 @@ class Path implements PathProxy {
           // used a quad when combining paths somewhere though.
           final double cpX = points[index++];
           final double cpY = points[index++];
-          proxy.cubicTo(
-            cpX,
-            cpY,
-            cpX,
-            cpY,
-            points[index++],
-            points[index++],
-          );
+          proxy.cubicTo(cpX, cpY, cpX, cpY, points[index++], points[index++]);
         case PathVerb.cubicTo:
           proxy.cubicTo(
             points[index++],
@@ -104,7 +97,7 @@ class Path implements PathProxy {
     1: PathVerb.lineTo,
     2: PathVerb.quadTo,
     4: PathVerb.cubicTo,
-    5: PathVerb.close
+    5: PathVerb.close,
   };
 
   /// Retrieves PathVerbs.
@@ -227,9 +220,7 @@ typedef _CreatePathType = ffi.Pointer<_SkPath> Function(int);
 typedef _create_path_type = ffi.Pointer<_SkPath> Function(ffi.Int);
 
 final _CreatePathType _createPathFn =
-    _dylib.lookupFunction<_create_path_type, _CreatePathType>(
-  'CreatePath',
-);
+    _dylib.lookupFunction<_create_path_type, _CreatePathType>('CreatePath');
 
 typedef _MoveToType = void Function(ffi.Pointer<_SkPath>, double, double);
 typedef _move_to_type = ffi.Void Function(
@@ -248,9 +239,23 @@ final _LineToType _lineToFn = _dylib.lookupFunction<_line_to_type, _LineToType>(
 );
 
 typedef _CubicToType = void Function(
-    ffi.Pointer<_SkPath>, double, double, double, double, double, double);
-typedef _cubic_to_type = ffi.Void Function(ffi.Pointer<_SkPath>, ffi.Float,
-    ffi.Float, ffi.Float, ffi.Float, ffi.Float, ffi.Float);
+  ffi.Pointer<_SkPath>,
+  double,
+  double,
+  double,
+  double,
+  double,
+  double,
+);
+typedef _cubic_to_type = ffi.Void Function(
+  ffi.Pointer<_SkPath>,
+  ffi.Float,
+  ffi.Float,
+  ffi.Float,
+  ffi.Float,
+  ffi.Float,
+  ffi.Float,
+);
 
 final _CubicToType _cubicToFn =
     _dylib.lookupFunction<_cubic_to_type, _CubicToType>('CubicTo');
@@ -258,14 +263,16 @@ final _CubicToType _cubicToFn =
 typedef _CloseType = void Function(ffi.Pointer<_SkPath>, bool);
 typedef _close_type = ffi.Void Function(ffi.Pointer<_SkPath>, ffi.Bool);
 
-final _CloseType _closeFn =
-    _dylib.lookupFunction<_close_type, _CloseType>('Close');
+final _CloseType _closeFn = _dylib.lookupFunction<_close_type, _CloseType>(
+  'Close',
+);
 
 typedef _ResetType = void Function(ffi.Pointer<_SkPath>);
 typedef _reset_type = ffi.Void Function(ffi.Pointer<_SkPath>);
 
-final _ResetType _resetFn =
-    _dylib.lookupFunction<_reset_type, _ResetType>('Reset');
+final _ResetType _resetFn = _dylib.lookupFunction<_reset_type, _ResetType>(
+  'Reset',
+);
 
 typedef _DestroyType = void Function(ffi.Pointer<_SkPath>);
 typedef _destroy_type = ffi.Void Function(ffi.Pointer<_SkPath>);

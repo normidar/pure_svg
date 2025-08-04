@@ -136,9 +136,7 @@ class GifImageSizeData extends ImageSizeData {
 /// This library does not support JPEG2000 images.
 class JpegImageSizeData extends ImageSizeData {
   JpegImageSizeData._({required super.width, required super.height})
-      : super(
-          format: ImageFormat.jpeg,
-        );
+      : super(format: ImageFormat.jpeg);
 
   factory JpegImageSizeData._fromBytes(ByteData data) {
     int index = 4; // Skip the first header bytes (already validated).
@@ -204,9 +202,10 @@ class WebPImageSizeData extends ImageSizeData {
 class BmpImageSizeData extends ImageSizeData {
   BmpImageSizeData._(ByteData data)
       : super(
-            format: ImageFormat.bmp,
-            width: data.getInt32(18, Endian.little),
-            height: data.getInt32(22, Endian.little));
+          format: ImageFormat.bmp,
+          width: data.getInt32(18, Endian.little),
+          height: data.getInt32(22, Endian.little),
+        );
 
   /// Returns true if `bytes` starts with the expected header for a WebP image.
   static bool matches(Uint8List bytes) {

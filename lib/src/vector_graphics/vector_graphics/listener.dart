@@ -106,12 +106,22 @@ Future<PictureInfo> decodeVectorGraphics(
                 (Zone self, ZoneDelegate parent, Zone zone, void Function() f) {
               Zone.root.scheduleMicrotask(f);
             },
-            createTimer: (Zone self, ZoneDelegate parent, Zone zone,
-                Duration duration, void Function() f) {
+            createTimer: (
+              Zone self,
+              ZoneDelegate parent,
+              Zone zone,
+              Duration duration,
+              void Function() f,
+            ) {
               return Zone.root.createTimer(duration, f);
             },
-            createPeriodicTimer: (Zone self, ZoneDelegate parent, Zone zone,
-                Duration period, void Function(Timer timer) f) {
+            createPeriodicTimer: (
+              Zone self,
+              ZoneDelegate parent,
+              Zone zone,
+              Duration period,
+              void Function(Timer timer) f,
+            ) {
               return Zone.root.createPeriodicTimer(period, f);
             },
           ),
@@ -252,12 +262,14 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
   static final Paint _emptyPaint = Paint();
   static final Paint _grayscaleDstInPaint = Paint()
     ..blendMode = BlendMode.dstIn
-    ..colorFilter = ColorFilter.matrix(<double>[
-      0, 0, 0, 0, 0, //
-      0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0,
-      0.2126, 0.7152, 0.0722, 0, 0,
-    ]); //convert to grayscale (https://www.w3.org/Graphics/Color/sRGB) and use them as transparency
+    ..colorFilter = ColorFilter.matrix(
+      <double>[
+        0, 0, 0, 0, 0, //
+        0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0,
+        0.2126, 0.7152, 0.0722, 0, 0,
+      ],
+    ); //convert to grayscale (https://www.w3.org/Graphics/Color/sRGB) and use them as transparency
 
   /// Convert the vector graphics asset this listener decoded into a [Picture].
   ///
@@ -302,9 +314,10 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
       }
     }
     if (_currentPattern != null) {
-      _patterns[_currentPattern!._patternId]!
-          .canvas!
-          .drawPath(path, paint ?? _emptyPaint);
+      _patterns[_currentPattern!._patternId]!.canvas!.drawPath(
+            path,
+            paint ?? _emptyPaint,
+          );
     } else {
       _canvas.drawPath(path, paint ?? _emptyPaint);
     }
@@ -329,11 +342,7 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
     if (paintId != null) {
       paint = _paints[paintId];
     }
-    _canvas.drawVertices(
-      vertexData,
-      BlendMode.srcOver,
-      paint ?? _emptyPaint,
-    );
+    _canvas.drawVertices(vertexData, BlendMode.srcOver, paint ?? _emptyPaint);
   }
 
   @override
@@ -384,7 +393,13 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
 
   @override
   void onPathCubicTo(
-      double x1, double y1, double x2, double y2, double x3, double y3) {
+    double x1,
+    double y1,
+    double x2,
+    double y2,
+    double x3,
+    double y3,
+  ) {
     _currentPath!.cubicTo(x1, y1, x2, y2, x3, y3);
   }
 
@@ -418,8 +433,11 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
   void onRestoreLayer() {
     if (_currentPattern != null) {
       final int patternId = _currentPattern!._patternId;
-      onPatternFinished(_currentPattern, _patterns[patternId]!.recorder,
-          _patterns[patternId]!.canvas!);
+      onPatternFinished(
+        _currentPattern,
+        _patterns[patternId]!.recorder,
+        _patterns[patternId]!.canvas!,
+      );
     } else {
       _canvas.restore();
     }
@@ -442,8 +460,14 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
   }
 
   @override
-  void onPatternStart(int patternId, double x, double y, double width,
-      double height, Float64List transform) {
+  void onPatternStart(
+    int patternId,
+    double x,
+    double y,
+    double width,
+    double height,
+    Float64List transform,
+  ) {
     assert(_currentPattern == null);
     _currentPattern = _PatternConfig(patternId, width, height, transform);
     final PictureRecorder recorder = _pictureFactory.createPictureRecorder();
@@ -456,8 +480,11 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
 
   /// Creates ImageShader for active pattern.
   // ignore: library_private_types_in_public_api
-  void onPatternFinished(_PatternConfig? currentPattern,
-      PictureRecorder? patternRecorder, Canvas canvas) {
+  void onPatternFinished(
+    _PatternConfig? currentPattern,
+    PictureRecorder? patternRecorder,
+    Canvas canvas,
+  ) {
     final FlutterVectorGraphicsListener patternListener =
         FlutterVectorGraphicsListener._(
       _pictureFactory,
@@ -468,13 +495,17 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
       _clipViewbox,
     );
 
-    patternListener._size =
-        Size(currentPattern!._width, currentPattern._height);
+    patternListener._size = Size(
+      currentPattern!._width,
+      currentPattern._height,
+    );
 
     final PictureInfo pictureInfo = patternListener.toPicture();
     _currentPattern = null;
     final Image image = pictureInfo.picture.toImageSync(
-        currentPattern._width.round(), currentPattern._height.round());
+      currentPattern._width.round(),
+      currentPattern._height.round(),
+    );
 
     final ImageShader pattern = ImageShader(
       image,
@@ -503,7 +534,7 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
     final Offset from = Offset(fromX, fromY);
     final Offset to = Offset(toX, toY);
     final List<Color> colorValues = <Color>[
-      for (int i = 0; i < colors.length; i++) Color(colors[i])
+      for (int i = 0; i < colors.length; i++) Color(colors[i]),
     ];
     final Gradient gradient = Gradient.linear(
       from,
@@ -533,7 +564,7 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
     final Offset center = Offset(centerX, centerY);
     final Offset? focal = focalX == null ? null : Offset(focalX, focalY!);
     final List<Color> colorValues = <Color>[
-      for (int i = 0; i < colors.length; i++) Color(colors[i])
+      for (int i = 0; i < colors.length; i++) Color(colors[i]),
     ];
     final bool hasFocal = focal != center && focal != null;
     final Gradient gradient = Gradient.radial(
@@ -579,16 +610,18 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
       decorations.add(TextDecoration.lineThrough);
     }
 
-    _textConfig.add(_TextConfig(
-      text,
-      fontFamily,
-      xAnchorMultiplier,
-      FontWeight.values[fontWeight],
-      fontSize,
-      TextDecoration.combine(decorations),
-      TextDecorationStyle.values[decorationStyle],
-      Color(decorationColor),
-    ));
+    _textConfig.add(
+      _TextConfig(
+        text,
+        fontFamily,
+        xAnchorMultiplier,
+        FontWeight.values[fontWeight],
+        fontSize,
+        TextDecoration.combine(decorations),
+        TextDecorationStyle.values[decorationStyle],
+        Color(decorationColor),
+      ),
+    );
   }
 
   @override
@@ -647,41 +680,43 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
       if (patternId != null) {
         paint.shader = _patterns[patternId]!.shader;
       }
-      final ParagraphBuilder builder = ParagraphBuilder(ParagraphStyle(
-        textDirection: _textDirection,
-      ));
+      final ParagraphBuilder builder = ParagraphBuilder(
+        ParagraphStyle(textDirection: _textDirection),
+      );
 
       try {
         // Try to set locale if available in the TextStyle class
-        builder.pushStyle(TextStyle(
-          locale: _locale,
-          foreground: paint,
-          fontWeight: textConfig.fontWeight,
-          fontSize: textConfig.fontSize,
-          fontFamily: textConfig.fontFamily,
-          decoration: textConfig.decoration,
-          decorationStyle: textConfig.decorationStyle,
-          decorationColor: textConfig.decorationColor,
-        ));
+        builder.pushStyle(
+          TextStyle(
+            locale: _locale,
+            foreground: paint,
+            fontWeight: textConfig.fontWeight,
+            fontSize: textConfig.fontSize,
+            fontFamily: textConfig.fontFamily,
+            decoration: textConfig.decoration,
+            decorationStyle: textConfig.decorationStyle,
+            decorationColor: textConfig.decorationColor,
+          ),
+        );
       } catch (e) {
         // Fallback if locale isn't supported
-        builder.pushStyle(TextStyle(
-          foreground: paint,
-          fontWeight: textConfig.fontWeight,
-          fontSize: textConfig.fontSize,
-          fontFamily: textConfig.fontFamily,
-          decoration: textConfig.decoration,
-          decorationStyle: textConfig.decorationStyle,
-          decorationColor: textConfig.decorationColor,
-        ));
+        builder.pushStyle(
+          TextStyle(
+            foreground: paint,
+            fontWeight: textConfig.fontWeight,
+            fontSize: textConfig.fontSize,
+            fontFamily: textConfig.fontFamily,
+            decoration: textConfig.decoration,
+            decorationStyle: textConfig.decorationStyle,
+            decorationColor: textConfig.decorationColor,
+          ),
+        );
       }
 
       builder.addText(textConfig.text);
 
       final Paragraph paragraph = builder.build();
-      paragraph.layout(const ParagraphConstraints(
-        width: double.infinity,
-      ));
+      paragraph.layout(const ParagraphConstraints(width: double.infinity));
       paragraphWidth = paragraph.maxIntrinsicWidth;
 
       if (_textTransform != null) {
@@ -721,8 +756,14 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
   }
 
   @override
-  void onDrawImage(int imageId, double x, double y, double width, double height,
-      Float64List? transform) {
+  void onDrawImage(
+    int imageId,
+    double x,
+    double y,
+    double width,
+    double height,
+    Float64List? transform,
+  ) {
     final Image image = _images[imageId]!;
     if (transform != null) {
       _canvas.save();

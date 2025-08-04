@@ -218,15 +218,7 @@ class CubicToCommand extends PathCommand {
     final Point abc = Point.lerp(ab, bc, t);
     final Point bcd = Point.lerp(bc, cd, t);
     final Point abcd = Point.lerp(abc, bcd, t);
-    return <Point>[
-      start,
-      ab,
-      abc,
-      abcd,
-      bcd,
-      cd,
-      end,
-    ];
+    return <Point>[start, ab, abc, abcd, bcd, cd, end];
   }
 
   /// Computes an approximation of the arc length of this cubic starting
@@ -239,13 +231,7 @@ class CubicToCommand extends PathCommand {
     // Lower values end up getting the end points wrong when dashing a path.
     const double tolerance = 1 / 2 * 3;
 
-    double compute(
-      Point p1,
-      Point cp1,
-      Point cp2,
-      Point p2,
-      double distance,
-    ) {
+    double compute(Point p1, Point cp1, Point cp2, Point p2, double distance) {
       // If it's "too curvy," cut it in half
       if (Point.distance(cp1, Point.lerp(p1, p2, 1 / 3)) > tolerance ||
           Point.distance(cp2, Point.lerp(p1, p2, 2 / 3)) > tolerance) {
@@ -463,12 +449,13 @@ class PathBuilder implements PathProxy {
 
     // Bottom left arc.
     cubicTo(
-        rect.left + rx - magicRadius.x,
-        rect.top + rect.height,
-        rect.left,
-        rect.top + rect.height - ry + magicRadius.y,
-        rect.left,
-        rect.top + rect.height - ry);
+      rect.left + rx - magicRadius.x,
+      rect.top + rect.height,
+      rect.left,
+      rect.top + rect.height - ry + magicRadius.y,
+      rect.left,
+      rect.top + rect.height - ry,
+    );
 
     // Left line.
     lineTo(rect.left, rect.top + ry);
@@ -496,10 +483,7 @@ class PathBuilder implements PathProxy {
   /// path objects with the same commands. By default, the builder will reset
   /// to an initial state.
   Path toPath({bool reset = true}) {
-    final Path path = Path(
-      commands: _commands,
-      fillType: fillType,
-    );
+    final Path path = Path(commands: _commands, fillType: fillType);
 
     if (reset) {
       _commands.clear();
@@ -544,10 +528,7 @@ class Path {
     for (final PathCommand command in _commands) {
       commands.add(command.transformed(matrix));
     }
-    return Path(
-      commands: commands,
-      fillType: fillType,
-    );
+    return Path(commands: commands, fillType: fillType);
   }
 
   @override
@@ -734,18 +715,13 @@ class _PathDasher {
       );
       currentPoint = dividedPoints[3];
       if (draw) {
-        _dashedCommands.add(CubicToCommand._fromIterablePoints(
-          dividedPoints.skip(1).take(3),
-        ));
+        _dashedCommands.add(
+          CubicToCommand._fromIterablePoints(dividedPoints.skip(1).take(3)),
+        );
       } else {
-        _dashedCommands.add(MoveToCommand(
-          currentPoint.x,
-          currentPoint.y,
-        ));
+        _dashedCommands.add(MoveToCommand(currentPoint.x, currentPoint.y));
       }
-      cubic = CubicToCommand._fromIterablePoints(
-        dividedPoints.skip(4).take(3),
-      );
+      cubic = CubicToCommand._fromIterablePoints(dividedPoints.skip(4).take(3));
       length = _intervals.next;
       distance = cubic.computeLength(currentPoint);
       draw = !draw;
