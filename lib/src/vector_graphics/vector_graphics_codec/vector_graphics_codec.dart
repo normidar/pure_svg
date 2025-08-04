@@ -35,8 +35,8 @@ const int kLineThroughMask = 0x4;
 /// decoding.
 ///
 /// See [VectorGraphicsCodecListener.onImage].
-typedef VectorGraphicsErrorListener =
-    void Function(Object error, StackTrace? stackTrace);
+typedef VectorGraphicsErrorListener = void Function(
+    Object error, StackTrace? stackTrace);
 
 /// Enumeration of the types of image data accepted by [VectorGraphicsCodec.writeImage].
 ///
@@ -1225,9 +1225,9 @@ enum _CurrentSection {
 class VectorGraphicsBuffer {
   /// Creates an interface for incrementally building a [ByteData] instance.
   VectorGraphicsBuffer()
-    : _buffer = <int>[],
-      _isDone = false,
-      _eightBytes = ByteData(8) {
+      : _buffer = <int>[],
+        _isDone = false,
+        _eightBytes = ByteData(8) {
     _eightBytesAsList = _eightBytes.buffer.asUint8List();
     // Begin message with the magic number and current version.
     _putUint32(VectorGraphicsCodec._magicNumber);

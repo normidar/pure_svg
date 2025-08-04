@@ -62,8 +62,7 @@ Future<PictureInfo> decodeVectorGraphics(
     assert(() {
       _debugLastTextDirection = textDirection;
       _debugLastLocale = locale;
-      useZone =
-          Zone.current != Zone.root &&
+      useZone = Zone.current != Zone.root &&
           Zone.current.scheduleMicrotask != Zone.root.scheduleMicrotask;
       return true;
     }());
@@ -72,11 +71,11 @@ Future<PictureInfo> decodeVectorGraphics(
     Future<PictureInfo> process() {
       final FlutterVectorGraphicsListener listener =
           FlutterVectorGraphicsListener(
-            id: loader.hashCode,
-            locale: locale,
-            textDirection: textDirection,
-            clipViewbox: clipViewbox,
-          );
+        id: loader.hashCode,
+        locale: locale,
+        textDirection: textDirection,
+        clipViewbox: clipViewbox,
+      );
       DecodeResponse response = _codec.decode(data, listener);
       if (response.complete) {
         return Future.value(listener.toPicture());
@@ -105,28 +104,26 @@ Future<PictureInfo> decodeVectorGraphics(
           specification: ZoneSpecification(
             scheduleMicrotask:
                 (Zone self, ZoneDelegate parent, Zone zone, void Function() f) {
-                  Zone.root.scheduleMicrotask(f);
-                },
-            createTimer:
-                (
-                  Zone self,
-                  ZoneDelegate parent,
-                  Zone zone,
-                  Duration duration,
-                  void Function() f,
-                ) {
-                  return Zone.root.createTimer(duration, f);
-                },
-            createPeriodicTimer:
-                (
-                  Zone self,
-                  ZoneDelegate parent,
-                  Zone zone,
-                  Duration period,
-                  void Function(Timer timer) f,
-                ) {
-                  return Zone.root.createPeriodicTimer(period, f);
-                },
+              Zone.root.scheduleMicrotask(f);
+            },
+            createTimer: (
+              Zone self,
+              ZoneDelegate parent,
+              Zone zone,
+              Duration duration,
+              void Function() f,
+            ) {
+              return Zone.root.createTimer(duration, f);
+            },
+            createPeriodicTimer: (
+              Zone self,
+              ZoneDelegate parent,
+              Zone zone,
+              Duration period,
+              void Function(Timer timer) f,
+            ) {
+              return Zone.root.createPeriodicTimer(period, f);
+            },
           ),
         )
         .run<Future<PictureInfo>>(process);
@@ -318,9 +315,9 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
     }
     if (_currentPattern != null) {
       _patterns[_currentPattern!._patternId]!.canvas!.drawPath(
-        path,
-        paint ?? _emptyPaint,
-      );
+            path,
+            paint ?? _emptyPaint,
+          );
     } else {
       _canvas.drawPath(path, paint ?? _emptyPaint);
     }
@@ -490,13 +487,13 @@ class FlutterVectorGraphicsListener extends VectorGraphicsCodecListener {
   ) {
     final FlutterVectorGraphicsListener patternListener =
         FlutterVectorGraphicsListener._(
-          _pictureFactory,
-          patternRecorder!,
-          canvas,
-          _locale,
-          _textDirection,
-          _clipViewbox,
-        );
+      _pictureFactory,
+      patternRecorder!,
+      canvas,
+      _locale,
+      _textDirection,
+      _clipViewbox,
+    );
 
     patternListener._size = Size(
       currentPattern!._width,

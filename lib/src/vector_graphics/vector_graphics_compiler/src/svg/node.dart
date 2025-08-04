@@ -93,7 +93,7 @@ abstract class TransformableNode extends Node {
 abstract class AttributedNode extends TransformableNode {
   /// Constructs a new tree node with [attributes].
   AttributedNode(this.attributes, {AffineMatrix? precalculatedTransform})
-    : super(precalculatedTransform ?? attributes.transform);
+      : super(precalculatedTransform ?? attributes.transform);
 
   /// A collection of painting attributes.
   ///
@@ -214,15 +214,13 @@ class ParentNode extends AttributedNode {
   /// required.
   Paint? createLayerPaint() {
     final double? fillOpacity = attributes.fill?.opacity;
-    final bool needsLayer =
-        (attributes.blendMode != null) ||
+    final bool needsLayer = (attributes.blendMode != null) ||
         (fillOpacity != null && fillOpacity != 1.0 && fillOpacity != 0.0);
 
     if (needsLayer) {
       return Paint(
         blendMode: attributes.blendMode,
-        fill:
-            attributes.fill?.toFill(Rect.largest, transform) ??
+        fill: attributes.fill?.toFill(Rect.largest, transform) ??
             Fill(color: Color.opaqueBlack.withOpacity(fillOpacity ?? 1.0)),
       );
     }
@@ -255,8 +253,7 @@ class TextPositionNode extends ParentNode {
 
     final bool hasXY = x != null && y != null;
     final bool hasDxDy = dx != null && dy != null;
-    final bool consumeTransform =
-        computedTransform == AffineMatrix.identity ||
+    final bool consumeTransform = computedTransform == AffineMatrix.identity ||
         (computedTransform.encodableInRect && (hasXY || hasDxDy));
 
     if (hasXY) {
@@ -304,7 +301,7 @@ class TextPositionNode extends ParentNode {
 class SaveLayerNode extends ParentNode {
   /// Create a new [SaveLayerNode]
   SaveLayerNode(super.attributes, {required this.paint, super.children})
-    : super(precalculatedTransform: AffineMatrix.identity);
+      : super(precalculatedTransform: AffineMatrix.identity);
 
   /// The paint to apply to the saved layer.
   final Paint paint;

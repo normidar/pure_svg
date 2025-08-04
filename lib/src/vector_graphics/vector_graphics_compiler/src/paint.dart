@@ -24,24 +24,22 @@ class Color {
   /// Creates an immutable representation of color from its red, green, blue,
   /// and 0..1 opacity parts.
   const Color.fromRGBO(int r, int g, int b, double opacity)
-    : value =
-          ((((opacity * 0xff ~/ 1) & 0xff) << 24) |
-              ((r & 0xff) << 16) |
-              ((g & 0xff) << 8) |
-              ((b & 0xff) << 0)) &
-          0xFFFFFFFF;
+      : value = ((((opacity * 0xff ~/ 1) & 0xff) << 24) |
+                ((r & 0xff) << 16) |
+                ((g & 0xff) << 8) |
+                ((b & 0xff) << 0)) &
+            0xFFFFFFFF;
 
   /// Creates an immutable representation of color from its alpha, red, green,
   /// and blue parts.
   ///
   /// Each part is represented by an integer from 0..255.
   const Color.fromARGB(int a, int r, int g, int b)
-    : value =
-          (((a & 0xff) << 24) |
-              ((r & 0xff) << 16) |
-              ((g & 0xff) << 8) |
-              ((b & 0xff) << 0)) &
-          0xFFFFFFFF;
+      : value = (((a & 0xff) << 24) |
+                ((r & 0xff) << 16) |
+                ((g & 0xff) << 8) |
+                ((b & 0xff) << 0)) &
+            0xFFFFFFFF;
 
   /// Fully opaque black.
   static const Color opaqueBlack = Color(0xFF000000);
@@ -202,14 +200,14 @@ class LinearGradient extends Gradient {
 
   @override
   int get hashCode => Object.hash(
-    id,
-    from,
-    to,
-    Object.hashAll(colors ?? <Color>[]),
-    Object.hashAll(offsets ?? <double>[]),
-    tileMode,
-    unitMode,
-  );
+        id,
+        from,
+        to,
+        Object.hashAll(colors ?? <Color>[]),
+        Object.hashAll(offsets ?? <double>[]),
+        tileMode,
+        unitMode,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -347,16 +345,16 @@ class RadialGradient extends Gradient {
 
   @override
   int get hashCode => Object.hash(
-    id,
-    center,
-    radius,
-    Object.hashAll(colors ?? <Color>[]),
-    Object.hashAll(offsets ?? <double>[]),
-    tileMode,
-    transform,
-    focalPoint,
-    unitMode,
-  );
+        id,
+        center,
+        radius,
+        Object.hashAll(colors ?? <Color>[]),
+        Object.hashAll(offsets ?? <double>[]),
+        tileMode,
+        transform,
+        focalPoint,
+        unitMode,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -401,7 +399,7 @@ class Paint {
   ///
   /// See [Paint].
   const Paint({BlendMode? blendMode, this.stroke, this.fill})
-    : blendMode = blendMode ?? BlendMode.srcOver;
+      : blendMode = blendMode ?? BlendMode.srcOver;
 
   /// The Porter-Duff algorithm to use when compositing this painting object
   /// with any objects painted under it.
@@ -508,14 +506,14 @@ class Stroke {
 
   @override
   int get hashCode => Object.hash(
-    PaintingStyle.stroke,
-    color,
-    shader,
-    cap,
-    join,
-    miterLimit,
-    width,
-  );
+        PaintingStyle.stroke,
+        color,
+        shader,
+        cap,
+        join,
+        miterLimit,
+        width,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -1356,15 +1354,15 @@ class TextConfig {
 
   @override
   int get hashCode => Object.hash(
-    text,
-    xAnchorMultiplier,
-    fontSize,
-    fontFamily,
-    fontWeight,
-    decoration,
-    decorationStyle,
-    decorationColor,
-  );
+        text,
+        xAnchorMultiplier,
+        fontSize,
+        fontFamily,
+        fontWeight,
+        decoration,
+        decorationStyle,
+        decorationColor,
+      );
 
   @override
   bool operator ==(Object other) {

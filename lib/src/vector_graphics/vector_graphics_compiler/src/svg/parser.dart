@@ -73,8 +73,8 @@ Node parseToNodeTree(String source) {
   )._parseToNodeTree();
 }
 
-typedef _ParseFunc =
-    void Function(SvgParser parserState, bool warningsAsErrors);
+typedef _ParseFunc = void Function(
+    SvgParser parserState, bool warningsAsErrors);
 
 typedef _PathFunc = Path? Function(SvgParser parserState);
 
@@ -99,7 +99,9 @@ class ColorOrNone {
   const ColorOrNone.color([this.color]) : isNone = false;
 
   /// See [ColorOrNone].
-  const ColorOrNone.none() : isNone = true, color = null;
+  const ColorOrNone.none()
+      : isNone = true,
+        color = null;
 
   @override
   String toString() => isNone ? '"none"' : (color?.toString() ?? 'null');
@@ -513,8 +515,7 @@ class SvgFillAttributes {
     if (color.isNone) {
       return null;
     }
-    final Color? resolvedColor =
-        color.color?.withOpacity(opacity ?? 1.0) ??
+    final Color? resolvedColor = color.color?.withOpacity(opacity ?? 1.0) ??
         defaultColor?.withOpacity(opacity ?? 1.0);
     if (resolvedColor == null) {
       return null;
@@ -1037,14 +1038,12 @@ class SvgParser {
     //   non-whitespace data, prepend a space.
     // - If the last text wasn't whitespace and ended with whitespace, prepend
     //   a space.
-    final bool prependSpace =
-        _currentAttributes.x == null &&
+    final bool prependSpace = _currentAttributes.x == null &&
             (_lastEndElementEvent?.localName == 'tspan' &&
                 textHasNonWhitespace) ||
         _lastTextEndedWithSpace;
 
-    _lastTextEndedWithSpace =
-        textHasNonWhitespace &&
+    _lastTextEndedWithSpace = textHasNonWhitespace &&
         text.startsWith(_whitespacePattern, text.length - 1);
 
     // From the spec:
@@ -1106,7 +1105,7 @@ class SvgParser {
     )?.clamp(0.0, 1.0);
     final Color? color =
         parseColor(attributeMap['color'], attributeName: 'color', id: id) ??
-        currentColor;
+            currentColor;
 
     final String? rawX = attributeMap['x'];
     final String? rawY = attributeMap['y'];
@@ -1239,19 +1238,18 @@ class SvgParser {
           .substring(colorString.indexOf('(') + 1, colorString.indexOf(')'))
           .split(',')
           .map((String rawColor) {
-            rawColor = rawColor.trim();
+        rawColor = rawColor.trim();
 
-            if (rawColor.endsWith('%')) {
-              rawColor = rawColor.substring(0, rawColor.length - 1);
-            }
+        if (rawColor.endsWith('%')) {
+          rawColor = rawColor.substring(0, rawColor.length - 1);
+        }
 
-            if (rawColor.contains('.')) {
-              return (parseDouble(rawColor)! * 2.55).round();
-            }
+        if (rawColor.contains('.')) {
+          return (parseDouble(rawColor)! * 2.55).round();
+        }
 
-            return int.parse(rawColor);
-          })
-          .toList();
+        return int.parse(rawColor);
+      }).toList();
       final double hue = values[0] / 360 % 1;
       final double saturation = values[1] / 100;
       final double luminance = values[2] / 100;
@@ -1306,14 +1304,13 @@ class SvgParser {
           .substring(colorString.indexOf('(') + 1, colorString.indexOf(')'))
           .split(',')
           .map((String rawColor) {
-            rawColor = rawColor.trim();
-            if (rawColor.endsWith('%')) {
-              rawColor = rawColor.substring(0, rawColor.length - 1);
-              return (parseDouble(rawColor)! * 2.55).round();
-            }
-            return int.parse(rawColor);
-          })
-          .toList();
+        rawColor = rawColor.trim();
+        if (rawColor.endsWith('%')) {
+          rawColor = rawColor.substring(0, rawColor.length - 1);
+          return (parseDouble(rawColor)! * 2.55).round();
+        }
+        return int.parse(rawColor);
+      }).toList();
 
       // rgba() isn't really in the spec, but Firefox supported it at one point so why not.
       final int a = rgb.length > 3 ? rgb[3] : 255;
@@ -1476,8 +1473,7 @@ class SvgParser {
     final String? rawStrokeDashArray = attributeMap['stroke-dasharray'];
     final String? rawStrokeDashOffset = attributeMap['stroke-dashoffset'];
 
-    final String? anyStrokeAttribute =
-        rawStroke ??
+    final String? anyStrokeAttribute = rawStroke ??
         rawStrokeCap ??
         rawLineJoin ??
         rawMiterLimit ??
@@ -1785,8 +1781,7 @@ class _Elements {
             PathNode(
               Path(
                 commands: sourcePath.commands.toList(),
-                fillType:
-                    parserState._currentAttributes.clipRule ??
+                fillType: parserState._currentAttributes.clipRule ??
                     PathFillType.nonZero,
               ),
               parserState._currentAttributes,
@@ -1954,8 +1949,7 @@ class _Elements {
           'stop-opacity',
           def: '1',
         )!;
-        final Color stopColor =
-            parserState.parseColor(
+        final Color stopColor = parserState.parseColor(
               parserState.attribute('stop-color'),
               attributeName: 'stop-color',
               id: parserState._currentAttributes.id,
@@ -2141,13 +2135,13 @@ class _Elements {
         (parseTransform(parserState.attribute('transform')) ??
                 AffineMatrix.identity)
             .translated(
-              parserState.parseDoubleWithUnits(
-                parserState.attribute('x', def: '0'),
-              )!,
-              parserState.parseDoubleWithUnits(
-                parserState.attribute('y', def: '0'),
-              )!,
-            );
+      parserState.parseDoubleWithUnits(
+        parserState.attribute('x', def: '0'),
+      )!,
+      parserState.parseDoubleWithUnits(
+        parserState.attribute('y', def: '0'),
+      )!,
+    );
 
     final ParentNode group = ParentNode(
       // parserState._currentAttributes,

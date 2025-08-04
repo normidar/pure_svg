@@ -4,8 +4,7 @@
 // Copied from flutter/engine repository: https://github.com/flutter/engine/tree/main/tools/path_ops
 // NOTE: For now, this copy and flutter/engine copy should be kept in sync.
 
-import '_path_ops_unsupported.dart'
-    if (dart.library.ffi) '_path_ops_ffi.dart'
+import '_path_ops_unsupported.dart' if (dart.library.ffi) '_path_ops_ffi.dart'
     as impl;
 export '_path_ops_unsupported.dart' if (dart.library.ffi) '_path_ops_ffi.dart';
 

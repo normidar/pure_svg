@@ -13,8 +13,8 @@ const String _transformCommandAtom = r' *,?([^(]+)\(([^)]*)\)';
 final RegExp _transformValidator = RegExp('^($_transformCommandAtom)*\$');
 final RegExp _transformCommand = RegExp(_transformCommandAtom);
 
-typedef _MatrixParser =
-    AffineMatrix Function(List<double> params, AffineMatrix current);
+typedef _MatrixParser = AffineMatrix Function(
+    List<double> params, AffineMatrix current);
 
 const Map<String, _MatrixParser> _matrixParsers = <String, _MatrixParser>{
   'matrix': _parseSvgMatrix,
@@ -66,10 +66,8 @@ AffineMatrix? parseTransform(String? transform) {
   if (!_transformValidator.hasMatch(transform)) {
     throw StateError('illegal or unsupported transform: $transform');
   }
-  final Iterable<Match> matches = _transformCommand
-      .allMatches(transform)
-      .toList()
-      .reversed;
+  final Iterable<Match> matches =
+      _transformCommand.allMatches(transform).toList().reversed;
   AffineMatrix result = AffineMatrix.identity;
   for (final Match m in matches) {
     final String command = m.group(1)!.trim();
@@ -204,8 +202,7 @@ double? parsePatternUnitToDouble(
   }
 
   if (rawValue.contains('%')) {
-    value =
-        ((double.parse(rawValue.substring(0, rawValue.length - 1))) / 100) *
+    value = ((double.parse(rawValue.substring(0, rawValue.length - 1))) / 100) *
         viewBoxValue!;
   } else if (rawValue.startsWith('0.')) {
     value = (double.parse(rawValue)) * viewBoxValue!;

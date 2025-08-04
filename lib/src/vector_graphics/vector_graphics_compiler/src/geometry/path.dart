@@ -153,12 +153,12 @@ class CubicToCommand extends PathCommand {
   /// Creates a new cubic Bezier command from the current point to x3,y3 using
   /// control points x1,y1 and x2,y2.
   const CubicToCommand(this.x1, this.y1, this.x2, this.y2, this.x3, this.y3)
-    : super._(PathCommandType.cubic);
+      : super._(PathCommandType.cubic);
 
   /// Creates a cubic command from the current point to [end] using [control1]
   /// and [control2] as control points.
   CubicToCommand.fromPoints(Point control1, Point control2, Point end)
-    : this(control1.x, control1.y, control2.x, control2.y, end.x, end.y);
+      : this(control1.x, control1.y, control2.x, control2.y, end.x, end.y);
 
   factory CubicToCommand._fromIterablePoints(Iterable<Point> points) {
     final List<Point> list = points.toList();
@@ -320,7 +320,7 @@ class PathBuilder implements PathProxy {
   ///
   /// By default, will create non-zero filled paths.
   PathBuilder([PathFillType? fillType])
-    : fillType = fillType ?? PathFillType.nonZero;
+      : fillType = fillType ?? PathFillType.nonZero;
 
   /// Creates a new mutable path builder object from an existing [Path].
   PathBuilder.fromPath(Path path) {
@@ -644,8 +644,8 @@ Path parseSvgPathData(String svg, [PathFillType? type]) {
 
 class _CircularIntervalList {
   _CircularIntervalList(this._vals)
-    : assert(_vals.isNotEmpty),
-      assert(!_vals.every((double val) => val == 0));
+      : assert(_vals.isNotEmpty),
+        assert(!_vals.every((double val) => val == 0));
 
   final List<double> _vals;
   int _idx = 0;
@@ -660,8 +660,8 @@ class _CircularIntervalList {
 
 class _PathDasher {
   _PathDasher(List<double> intervals)
-    : assert(!intervals.every((double interval) => interval == 0)),
-      _intervals = _CircularIntervalList(intervals);
+      : assert(!intervals.every((double interval) => interval == 0)),
+        _intervals = _CircularIntervalList(intervals);
 
   final _CircularIntervalList _intervals;
 
