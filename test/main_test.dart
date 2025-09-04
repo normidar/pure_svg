@@ -1,45 +1,44 @@
+import 'dart:io';
+
 import 'package:pure_svg/src/vector_graphics/vector_graphics/vector_graphics.dart';
 import 'package:pure_svg/svg.dart';
 import 'package:pure_ui/pure_ui.dart' as ui;
 import 'package:test/test.dart';
-import 'dart:io';
 
 void main() {
   group('PictureRecorder', () {
     test('make a svg image', () async {
-      final canvas = ui.Canvas.forRecording();
+      final recorder = ui.PictureRecorder();
+      final canvas =
+          ui.Canvas(recorder, const ui.Rect.fromLTWH(0, 0, 1024, 1024));
 
-      const String rawSvg = '''
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-  <defs>
-    <linearGradient id="lg" x1="100%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#ffcf68"/>
-      <stop offset="100%" stop-color="#e0903b"/>
-    </linearGradient>
-  </defs>
-  <rect x="0" y="0" width="1024" height="1024" fill="url(#lg)" />
-  <g transform="translate(6,6) scale(30)">
-    <path d="M3 6h19 M3 11.5h16 M3 17h11" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" />
-    <circle cx="20" cy="17" r="2.5" fill="#FFD700" />
-  </g>
-</svg>
-''';
+      // Read SVG file from same directory
+      final svgFile = File('test/test.svg');
+      if (!await svgFile.exists()) {
+        throw Exception('SVG file not found: ${svgFile.path}');
+      }
+      final String rawSvg = await svgFile.readAsString();
+
       final PictureInfo pictureInfo = await vg.loadPicture(
-        const SvgStringLoader(rawSvg),
+        SvgStringLoader(rawSvg),
       );
 
       // You can draw the picture to a canvas:
       canvas.drawPicture(pictureInfo.picture);
 
-      // Or convert the picture to an image:
-      final ui.Image image = await pictureInfo.picture.toImage(1024, 1024);
+      final picture = recorder.endRecording();
+      final image = await picture.toImage(400, 400);
 
-      // Export image as PNG
-      final pngData = image.toPng();
+      // Ensure output directory exists
+      final outputDir = Directory('test_output');
+      if (!await outputDir.exists()) {
+        await outputDir.create(recursive: true);
+      }
 
       // Save to file
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       final file = File('test_output/output_image.png');
-      await file.writeAsBytes(pngData);
+      await file.writeAsBytes(byteData!.buffer.asUint8List());
 
       pictureInfo.picture.dispose();
     });

@@ -5,7 +5,8 @@ import 'package:pure_svg/svg.dart';
 import 'package:pure_ui/pure_ui.dart' as ui;
 
 void main() async {
-  final canvas = ui.Canvas.forRecording();
+  final recorder = ui.PictureRecorder();
+  final canvas = ui.Canvas(recorder, const ui.Rect.fromLTWH(0, 0, 1024, 1024));
 
   const String rawSvg = '''
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
@@ -33,11 +34,12 @@ void main() async {
   final ui.Image image = await pictureInfo.picture.toImage(1024, 1024);
 
   // Export image as PNG
-  final pngData = image.toPng();
+  final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
   // Save to file
   final file = File('test_output/output_image.png');
-  await file.writeAsBytes(pngData);
+  await file.parent.create(recursive: true);
+  await file.writeAsBytes(byteData!.buffer.asUint8List());
 
   pictureInfo.picture.dispose();
 }
