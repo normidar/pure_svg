@@ -7,7 +7,8 @@ import 'dart:io';
 void main() {
   group('PictureRecorder', () {
     test('make a svg image', () async {
-      final canvas = ui.Canvas.forRecording();
+      final recorder = ui.PictureRecorder();
+      final canvas = ui.Canvas(recorder, const ui.Rect.fromLTWH(0, 0, 1024, 1024));
 
       const String rawSvg = '''
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
@@ -35,11 +36,11 @@ void main() {
       final ui.Image image = await pictureInfo.picture.toImage(1024, 1024);
 
       // Export image as PNG
-      final pngData = image.toPng();
+      final pngData = await image.toByteData(format: ui.ImageByteFormat.png);
 
       // Save to file
       final file = File('test_output/output_image.png');
-      await file.writeAsBytes(pngData);
+      await file.writeAsBytes(pngData!.buffer.asUint8List());
 
       pictureInfo.picture.dispose();
     });

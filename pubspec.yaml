@@ -2,13 +2,14 @@
 dependencies:
   meta: ^1.0.0
   path_parsing: ^1.0.0
-  pure_ui: ^0.0.1
+  pure_ui:
+    path: /Users/normidar/Documents/pure_ui
   xml: ^6.3.0
 description: A pure Dart SVG parser and renderer designed for Flutter and Dart projects.
 dev_dependencies:
   test: ^1.26.0
 environment:
-  sdk: ^3.2.0
+  sdk: ^3.3.0
 name: pure_svg
 repository: https://github.com/normidar/pure_svg
 topics:
