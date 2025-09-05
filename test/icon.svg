@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Pixodesk SVG (https://pixodesk.com) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" fill="url(#13362)">
+  <defs>
+    <radialGradient id="13362" spreadMethod="pad" cx="197.47884545550824" cy="433.4813935212655" fx="197.47884545550824" fy="433.4813935212655" r="643.1205960955945" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(255,188,0)"/>
+      <stop offset="100%" stop-color="rgb(33,33,33)"/>
+    </radialGradient>
+    <radialGradient id="14211" spreadMethod="pad" cx="613.9959277678541" cy="-10.815085809737695" fx="613.9959277678541" fy="-10.815085809737695" r="105.50089247996553" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(61,196,255)"/>
+      <stop offset="100%" stop-color="rgb(0,167,248)"/>
+    </radialGradient>
+    <radialGradient id="14154" spreadMethod="pad" cx="255.90715000000003" cy="156.50050000000002" fx="255.90715000000003" fy="156.50050000000002" r="286.6555164221702" gradientUnits="userSpaceOnUse">
+      <stop offset="65.7%" stop-color="rgb(241,175,0)"/>
+      <stop offset="100%" stop-color="rgb(247,164,0)"/>
+    </radialGradient>
+    <radialGradient id="13362" spreadMethod="pad" cx="197.47884545550824" cy="433.4813935212655" fx="197.47884545550824" fy="433.4813935212655" r="643.1205960955945" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(255,188,0)"/>
+      <stop offset="100%" stop-color="rgb(33,33,33)"/>
+    </radialGradient>
+  </defs>
+  <rect fill="#ffffff" stroke="#003a73" transform="translate(516.0379, 506.6229)translate(-507.7672, -507.0683)" x="-26.0403" y="-32.6317" width="1077.8455" height="1078.1226"/>
+  <path fill="#0400a0" transform="translate(359.3156, 280.2061)rotate(12)" d="M212.9887,-104.9853L129.967,-57.3042L129.967,91.5115L84.1594,118.0645L38.0719,91.49L38.0719,38.3596L84.1594,12.0424L113.7934,29.2284L113.7934,-13.758L83.901,-30.7285L0.9003,17.4912L0.9003,112.8749L84.1808,160.836L167.1811,112.8749L167.1811,-35.9187L213.2696,-62.4943L259.335,-35.9187L259.335,16.9742L213.2696,43.7869L183.3764,26.4501L183.3764,69.2209L212.9887,86.2987L296.8077,38.6181L296.8077,-57.3042L212.9887,-104.9853z"/>
+  <rect fill="url(#14154)" stroke="#003a73" stroke-width="0" transform="translate(248.8319, 757.6947)translate(-18, -331.7277)" rx="60" ry="60" x="-35.3531" y="-51.7267" width="582.5205" height="416.4544"/>
+  <rect fill="url(#14211)" stroke="#003a73" stroke-width="0" transform="translate(174.5819, 888.8338)translate(-18, -331.7276)" rx="15" ry="15" x="515.5551" y="-76.9843" width="166.4625" height="171.6945"/>
+  <g transform="translate(427.2062, 1097.3766)scale(0.26, 0.26)">
+    <rect fill="#6c00f6" rx="464" ry="464" width="360" height="360"/>
+    <path fill="#ffffff" d="M218.804,99.5819L168.572,128.432L168.572,218.473L140.856,234.539L112.97,218.46L112.97,186.313L140.856,170.39L158.786,180.788L158.786,154.779L140.699,144.511L90.4795,173.687L90.4795,231.399L140.869,260.418L191.088,231.399L191.088,141.371L218.974,125.291L246.846,141.371L246.846,173.374L218.974,189.597L200.887,179.107L200.887,204.986L218.804,215.319L269.519,186.47L269.519,128.432L218.804,99.5819z"/>
+  </g>
+</svg>
