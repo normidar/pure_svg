@@ -1,43 +1,79 @@
 import 'dart:io';
+import 'dart:math' as math;
 
-import 'package:pure_svg/src/vector_graphics/vector_graphics/vector_graphics.dart';
-import 'package:pure_svg/svg.dart';
 import 'package:pure_ui/pure_ui.dart' as ui;
+import 'package:test/test.dart';
 
-void main() async {
-  final canvas = ui.Canvas.forRecording();
+void main() {
+  group('PictureRecorder', () {
+    test('make a svg image', () async {
+      final recorder = ui.PictureRecorder();
+      final canvas =
+          ui.Canvas(recorder, const ui.Rect.fromLTWH(0, 0, 400, 400));
 
-  const String rawSvg = '''
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-  <defs>
-    <linearGradient id="lg" x1="100%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#ffcf68"/>
-      <stop offset="100%" stop-color="#e0903b"/>
-    </linearGradient>
-  </defs>
-  <rect x="0" y="0" width="1024" height="1024" fill="url(#lg)" />
-  <g transform="translate(6,6) scale(30)">
-    <path d="M3 6h19 M3 11.5h16 M3 17h11" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" />
-    <circle cx="20" cy="17" r="2.5" fill="#FFD700" />
-  </g>
-</svg>
-''';
-  final PictureInfo pictureInfo = await vg.loadPicture(
-    const SvgStringLoader(rawSvg),
-  );
+      // Background gradient effect (simulated with multiple rectangles)
+      for (int i = 0; i < 400; i += 10) {
+        final opacity = (255 - (i * 255 / 400)).round();
+        final paint = ui.Paint()
+          ..color = ui.Color.fromARGB(opacity, 100, 150, 255)
+          ..style = ui.PaintingStyle.fill;
+        canvas.drawRect(ui.Rect.fromLTWH(i.toDouble(), 0, 10, 400), paint);
+      }
 
-  // You can draw the picture to a canvas:
-  canvas.drawPicture(pictureInfo.picture);
+      // Draw overlapping circles with different colors
+      final colors = [
+        const ui.Color(0xFFFF0000), // Red
+        const ui.Color(0xFF00FF00), // Green
+        const ui.Color(0xFF0000FF), // Blue
+        const ui.Color(0xFFFFFF00), // Yellow
+        const ui.Color(0xFFFF00FF), // Magenta
+      ];
 
-  // Or convert the picture to an image:
-  final ui.Image image = await pictureInfo.picture.toImage(1024, 1024);
+      for (int i = 0; i < colors.length; i++) {
+        final paint = ui.Paint()
+          ..color = colors[i].withValues(alpha: 0.7)
+          ..style = ui.PaintingStyle.fill;
 
-  // Export image as PNG
-  final pngData = image.toPng();
+        final centerX = 100 + (i * 50).toDouble();
+        final centerY = 200.0;
+        canvas.drawCircle(ui.Offset(centerX, centerY), 60, paint);
+      }
 
-  // Save to file
-  final file = File('test_output/output_image.png');
-  await file.writeAsBytes(pngData);
+      // Draw concentric rectangles with rotation
+      canvas.save();
+      canvas.translate(200, 200);
+      for (int i = 0; i < 5; i++) {
+        canvas.save();
+        canvas.rotate(i * math.pi / 8);
 
-  pictureInfo.picture.dispose();
+        final paint = ui.Paint()
+          ..color =
+              ui.Color.fromARGB(255, 255 - (i * 40), i * 40, 100 + (i * 30))
+          ..style = ui.PaintingStyle.stroke
+          ..strokeWidth = 3.0;
+
+        final size = 80 - (i * 10).toDouble();
+        canvas.drawRect(
+            ui.Rect.fromCenter(
+                center: ui.Offset.zero, width: size, height: size),
+            paint);
+        canvas.restore();
+      }
+      canvas.restore();
+
+      final picture = recorder.endRecording();
+      final image = await picture.toImage(400, 400);
+
+      expect(image.width, 400);
+      expect(image.height, 400);
+
+      // Save as PNG for visual verification
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      final file = File('test_output/complex_geometric.png');
+      await file.parent.create(recursive: true);
+      await file.writeAsBytes(byteData!.buffer.asUint8List());
+
+      print('Complex geometric shapes saved: ${file.path}');
+    });
+  });
 }
