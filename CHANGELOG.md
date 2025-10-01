@@ -1,3 +1,7 @@
+## 0.0.5
+
+- Update pure_ui dependency to 0.1.1.
+
 ## 0.0.4
 
 - Format dart code.
