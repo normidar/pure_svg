@@ -481,10 +481,16 @@ class SvgFillAttributes {
 
   /// Inherits attributes in this from parent.
   SvgFillAttributes applyParent(SvgFillAttributes? parent) {
+    // Only inherit shaderId from parent when this element has no explicit fill
+    // of its own (neither a solid color nor fill="none"). If this element has
+    // an explicit solid-color fill (color.color != null) or fill="none"
+    // (color.isNone), the parent's gradient shader must not bleed through.
+    final inheritedShaderId =
+        shaderId ?? (color.color == null && !color.isNone ? parent?.shaderId : null);
     return SvgFillAttributes._(
       _definitions,
       color: color._applyParent(parent?.color),
-      shaderId: shaderId ?? parent?.shaderId,
+      shaderId: inheritedShaderId,
       hasPattern: hasPattern ?? parent?.hasPattern,
       opacity: opacity ?? parent?.opacity,
     );

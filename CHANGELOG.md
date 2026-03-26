@@ -1,3 +1,7 @@
+## 0.0.6
+
+- Fix gradient rendering issues.
+
 ## 0.0.5
 
 - Update pure_ui dependency to 0.1.1.
