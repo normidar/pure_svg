@@ -115,6 +115,14 @@ abstract class SvgLoader<T> extends BytesLoader {
     return const SvgTheme();
   }
 
+  /// Resolves the raw SVG source text this loader provides.
+  ///
+  /// Used by [renderSvgToPng] to rewrite the SVG (e.g. to bake in a scale
+  /// when a target size is requested) before it is compiled and decoded.
+  Future<String> resolveSvgSource() {
+    return prepareMessage().then(provideSvg);
+  }
+
   Future<ByteData> _load() {
     final SvgTheme theme = getTheme();
     return prepareMessage().then((T? message) {

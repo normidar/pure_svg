@@ -1,3 +1,7 @@
+## 0.2.0
+
+- Fix `svg.toPng()` (and `renderSvgToPng()`) ignoring the requested `width`/`height` when they didn't match the SVG's intrinsic size: content was previously rendered unscaled into the top-left corner of the output canvas instead of being scaled to fill it. Content is now scaled to fit (preserving aspect ratio, like `BoxFit.contain`) and centered.
+
 ## 0.1.0
 
 - Add `svg.toPng()` to render an SVG directly to PNG bytes without needing to `import 'package:pure_ui/pure_ui.dart'`.
