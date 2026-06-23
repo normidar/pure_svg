@@ -23,7 +23,39 @@ dependencies:
 
 ## Basic Usage
 
-### Generate Image from SVG String
+### Generate PNG from SVG String (no `pure_ui` import required)
+
+If you just need PNG bytes, `svg.toPng` handles loading, rendering and
+encoding internally, so your code does not need to depend on `pure_ui` at
+all:
+
+```dart
+import 'dart:io';
+
+import 'package:pure_svg/svg.dart';
+
+const String rawSvg = '''
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="50" height="50" fill="#FF0000" />
+  <circle cx="75" cy="75" r="25" fill="#00FF00" />
+</svg>
+''';
+
+// Width/height default to the SVG's intrinsic size when omitted.
+final pngBytes = await svg.toPng(
+  const SvgStringLoader(rawSvg),
+  width: 100,
+  height: 100,
+);
+
+await File('output.png').writeAsBytes(pngBytes);
+```
+
+### Generate Image from SVG String (manual `pure_ui` canvas access)
+
+For full control over the `Picture`/`Canvas` (e.g. drawing it together with
+other content, or rendering at a custom scale), use `vg.loadPicture` directly
+and import `pure_ui` yourself:
 
 ```dart
 import 'package:pure_svg/src/vector_graphics/vector_graphics/vector_graphics.dart';
@@ -49,9 +81,11 @@ canvas.drawPicture(pictureInfo.picture);
 final ui.Image image = await pictureInfo.picture.toImage(100, 100);
 
 // Export as PNG data
-final pngData = image.toPng();
+final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+final pngData = byteData!.buffer.asUint8List();
 
 // Dispose resources
+image.dispose();
 pictureInfo.picture.dispose();
 ```
 
@@ -60,19 +94,16 @@ pictureInfo.picture.dispose();
 ```dart
 import 'dart:io';
 
-// Load SVG file
+import 'package:pure_svg/svg.dart';
+
+// Load SVG file and render it straight to PNG, no pure_ui import needed.
 final svgString = await File('path/to/your.svg').readAsString();
-final PictureInfo pictureInfo = 
-    await vg.loadPicture(SvgStringLoader(svgString));
-
-// Convert to image
-final ui.Image image = await pictureInfo.picture.toImage(512, 512);
-
-// Save to file
-final pngData = image.toPng();
-await File('output.png').writeAsBytes(pngData);
-
-pictureInfo.picture.dispose();
+final pngBytes = await svg.toPng(
+  SvgStringLoader(svgString),
+  width: 512,
+  height: 512,
+);
+await File('output.png').writeAsBytes(pngBytes);
 ```
 
 ## Advanced Features

@@ -1,3 +1,8 @@
+## 0.1.0
+
+- Add `svg.toPng()` to render an SVG directly to PNG bytes without needing to `import 'package:pure_ui/pure_ui.dart'`.
+- Fix README example using non-existent `Image.toPng()`; use `Image.toByteData(format: ImageByteFormat.png)` instead.
+
 ## 0.0.6
 
 - Fix gradient rendering issues.

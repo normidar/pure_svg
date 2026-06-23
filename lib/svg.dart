@@ -1,9 +1,14 @@
+import 'dart:typed_data';
+
+import 'package:pure_svg/src/vector_graphics/vector_graphics/loader.dart';
 import 'package:pure_svg/svg.dart';
 
 import 'src/cache.dart';
+import 'src/png_renderer.dart';
 
 export 'src/cache.dart';
 export 'src/loaders.dart';
+export 'src/png_renderer.dart';
 
 /// Instance for [Svg]'s utility methods, which can produce a [DrawableRoot]
 /// or [PictureInfo] from [String] or [Uint8List].
@@ -26,6 +31,22 @@ class Svg {
 
   /// The cache instance for decoded SVGs.
   final Cache cache = Cache();
+
+  /// Decodes the vector graphic loaded by [loader] and renders it directly
+  /// to PNG bytes.
+  ///
+  /// Unlike [VectorGraphicUtilities.loadPicture], this does not return a
+  /// [PictureInfo]/[Picture], so callers do not need to
+  /// `import 'package:pure_ui/pure_ui.dart'` themselves to render a PNG.
+  ///
+  /// If [width] or [height] are omitted, the SVG's intrinsic size is used.
+  Future<Uint8List> toPng(
+    BytesLoader loader, {
+    int? width,
+    int? height,
+  }) {
+    return renderSvgToPng(loader, width: width, height: height);
+  }
 }
 
 // ignore: avoid_classes_with_only_static_members
