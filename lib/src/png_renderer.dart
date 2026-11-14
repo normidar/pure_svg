@@ -121,9 +121,15 @@ String? _scaleSvgToFit(String svgSource, {int? width, int? height}) {
   root.children.clear();
   root.children.add(
     XmlElement(
+      // TODO: Use XmlName.parts instead when the xml constraint is updated to
+      // ^7.1.0.
+      // ignore: deprecated_member_use
       XmlName('g'),
       <XmlAttribute>[
         XmlAttribute(
+          // TODO: Use XmlName.parts instead when the xml constraint is updated
+          // to ^7.1.0.
+          // ignore: deprecated_member_use
           XmlName('transform'),
           'translate($translateX, $translateY) scale($scale)',
         ),
