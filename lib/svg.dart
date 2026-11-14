@@ -3,9 +3,6 @@ import 'dart:typed_data';
 import 'package:pure_svg/src/vector_graphics/vector_graphics/loader.dart';
 import 'package:pure_svg/svg.dart';
 
-import 'src/cache.dart';
-import 'src/png_renderer.dart';
-
 export 'src/cache.dart';
 export 'src/loaders.dart';
 export 'src/png_renderer.dart';
